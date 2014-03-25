@@ -3,6 +3,7 @@
  */
 package com.boundless.benchmark;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.http.auth.AuthScope;
@@ -98,6 +99,7 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 		String geoserverHostAndPort = this.getProperties().getProperty(
 				"geoserverHostAndPort");
 
+		logger.debug("About to create workspace: " + workspaceName);
 		HttpPost request = new HttpPost("http://" + geoserverHostAndPort
 				+ "/geoserver/rest/workspaces");
 		request.addHeader("Accept", ContentType.APPLICATION_JSON.toString());
@@ -108,18 +110,23 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 		return (Boolean) process(request, 201);
 	}
 
-	public boolean createUrlBasedShapefileBackedDataStore(String workspaceName,
-			String dataStoreName, String url) throws Exception {
+	public boolean createShapefileBackedDataStore(String workspaceName,
+			String dataStoreName, String filePath) throws Exception {
 		String geoserverHostAndPort = this.getProperties().getProperty(
 				"geoserverHostAndPort");
 
+		logger.debug("About to load data from [" + filePath
+				+ "] into data store [" + dataStoreName + "] in workspace ["
+				+ workspaceName + "]");
 		HttpPut request = new HttpPut("http://" + geoserverHostAndPort
 				+ "/geoserver/rest/workspaces/" + workspaceName
 				+ "/datastores/" + dataStoreName
-				+ "/url.shp?configure=all&target=shp");
+				+ "/file.shp?configure=all&target=shp");
 		request.addHeader("Content-type", "application/zip");
-		request.setEntity(EntityBuilder.create().setText(url).build());
+		request.setEntity(EntityBuilder.create().setFile(new File(filePath))
+				.build());
 
 		return (Boolean) process(request, 201);
 	}
+
 }

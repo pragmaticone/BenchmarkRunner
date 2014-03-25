@@ -28,13 +28,17 @@ public class BenchmarkRunner {
 		List<IBenchmarkComponent> components = (List<IBenchmarkComponent>) ctx
 				.getBean("benchmark-components");
 
+		logger.info("Starting benchmarking session...");
 		try {
 			for (IBenchmarkComponent component : components) {
 				logger.info("Running: " + component.getId());
 				component.process();
 			}
 		} catch (Exception e) {
+			logger.info("Error while running benchmarking session, stack trace follows");
 			e.printStackTrace();
+		} finally {
+			logger.info("Completed benchmarking session...");
 		}
 	}
 

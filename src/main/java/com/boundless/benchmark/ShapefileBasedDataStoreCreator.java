@@ -60,7 +60,7 @@ public class ShapefileBasedDataStoreCreator extends GeoserverCommunicator {
 		}
 
 		// Now that the workspace exists, create the data store.
-		if (!this.createUrlBasedShapefileBackedDataStore(workspaceName,
+		if (!this.createShapefileBackedDataStore(workspaceName,
 				datastoreName, shapefileZipLocation)) {
 			logger.info("Data store " + datastoreName
 					+ " could not be created.");

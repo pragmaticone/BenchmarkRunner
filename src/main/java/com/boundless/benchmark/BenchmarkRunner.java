@@ -25,10 +25,11 @@ public class BenchmarkRunner {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext(
 				"benchmark-components.xml");
 		@SuppressWarnings("unchecked")
-		List<BenchmarkComponent> components = (List<BenchmarkComponent>) ctx
+		List<IBenchmarkComponent> components = (List<IBenchmarkComponent>) ctx
 				.getBean("benchmark-components");
+
 		try {
-			for (BenchmarkComponent component : components) {
+			for (IBenchmarkComponent component : components) {
 				logger.info("Running: " + component.getId());
 				component.process();
 			}

@@ -3,7 +3,7 @@
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
-      <pattern>%d{MMM dd, yyyy HH:mm:ss} %C %M  %n%p: %m %n</pattern>
+      <pattern>%d{MMM dd yyyy HH:mm:ss} [%C{0}] %p: %m %n</pattern>
     </encoder>
   </appender>
 

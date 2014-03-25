@@ -3,13 +3,16 @@
  */
 package com.boundless.benchmark;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Soumya Sengupta
  * 
  */
 public class GeoserverCleaner extends GeoserverCommunicator {
-	private static String WORKSPACE = "shapefile-based-ws";
+	final static Logger logger = LoggerFactory
+			.getLogger(ShapefileBasedDataStoreCreator.class);
 
 	/*
 	 * (non-Javadoc)
@@ -28,16 +31,21 @@ public class GeoserverCleaner extends GeoserverCommunicator {
 	 */
 	@Override
 	public Object process() throws Exception {
-		if (!this.checkIfWorkspaceExists(WORKSPACE)) {
-			logger.info("Workspace " + WORKSPACE + " exists.");
-			if (!this.deleteWorkspace(WORKSPACE)) {
-				throw new Exception("Workspace " + WORKSPACE
+		String workspaceName = this.getProperties().getProperty(
+				"shpWorkspaceName");
+
+		// If the workspace exists, remove from Geoserver so that we start
+		// from a clean slate.
+		if (!this.checkIfWorkspaceExists(workspaceName)) {
+			logger.info("Workspace " + workspaceName + " exists.");
+			if (!this.deleteWorkspace(workspaceName)) {
+				throw new Exception("Workspace " + workspaceName
 						+ " could not be deleted.");
 			} else {
-				logger.info("Workspace " + WORKSPACE + " was deleted.");
+				logger.info("Workspace " + workspaceName + " was deleted.");
 			}
 		} else {
-			logger.info("Workspace " + WORKSPACE + " does not exists.");
+			logger.info("Workspace " + workspaceName + " does not exists.");
 		}
 
 		return new Object();

@@ -4,8 +4,20 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="shp-ds" class="com.boundless.benchmark.ShapefileBasedDataStoreCreator" />
-    <bean id="del-ws" class="com.boundless.benchmark.GeoserverCleaner" />
+    <bean id="benchmark-properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>file:benchmark-runner.properties</value>
+			</list>
+		</property>
+    </bean>
+    
+    <bean id="shp-ds" class="com.boundless.benchmark.ShapefileBasedDataStoreCreator">
+    	<property name="properties" ref="benchmark-properties" />
+    </bean>
+    <bean id="del-ws" class="com.boundless.benchmark.GeoserverCleaner">
+    	<property name="properties" ref="benchmark-properties" />
+    </bean>
     
     <bean id="benchmark-components" class="java.util.ArrayList">
     	<constructor-arg>

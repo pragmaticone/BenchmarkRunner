@@ -26,20 +26,23 @@ import org.slf4j.LoggerFactory;
  * @author Soumya Sengupta
  * 
  */
-public abstract class GeoserverCommunicator implements BenchmarkComponent {
-	protected static String HOST = "localhost";
-	protected static int PORT = 8080;
-	protected static String USERNAME = "admin";
-	protected static String PASSWORD = "geoserver";
-
+public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 	final static Logger logger = LoggerFactory
 			.getLogger(GeoserverCommunicator.class);
 
 	protected Object process(HttpUriRequest request, int expectedResponseCode)
 			throws Exception {
+		String[] geoserverHostAndPort = this.getProperties()
+				.getProperty("geoserverHostAndPort").split(":");
+		String geoserverHost = geoserverHostAndPort[0];
+		int geoserverPort = Integer.parseInt(geoserverHostAndPort[1]);
+		String username = this.getProperties().getProperty("username");
+		String password = this.getProperties().getProperty("password");
+
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
-		credsProvider.setCredentials(new AuthScope(HOST, PORT),
-				new UsernamePasswordCredentials(USERNAME, PASSWORD));
+		credsProvider.setCredentials(
+				new AuthScope(geoserverHost, geoserverPort),
+				new UsernamePasswordCredentials(username, password));
 
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
@@ -69,26 +72,34 @@ public abstract class GeoserverCommunicator implements BenchmarkComponent {
 
 	public boolean checkIfWorkspaceExists(String workspaceName)
 			throws Exception {
-		HttpGet request = new HttpGet("http://" + HOST + ":"
-				+ new Integer(PORT).toString() + "/geoserver/rest/workspaces/"
-				+ workspaceName);
+		String geoserverHostAndPort = this.getProperties().getProperty(
+				"geoserverHostAndPort");
+
+		HttpGet request = new HttpGet("http://" + geoserverHostAndPort
+				+ "/geoserver/rest/workspaces/" + workspaceName);
 		request.addHeader("Accept", ContentType.APPLICATION_JSON.toString());
 
 		return (Boolean) process(request, 404);
 	}
 
 	public boolean deleteWorkspace(String workspaceName) throws Exception {
-		HttpDelete request = new HttpDelete("http://" + HOST + ":"
-				+ new Integer(PORT).toString() + "/geoserver/rest/workspaces/"
-				+ workspaceName + "?recurse=true");
+		String geoserverHostAndPort = this.getProperties().getProperty(
+				"geoserverHostAndPort");
+
+		HttpDelete request = new HttpDelete("http://" + geoserverHostAndPort
+				+ "/geoserver/rest/workspaces/" + workspaceName
+				+ "?recurse=true");
 		request.addHeader("Accept", ContentType.APPLICATION_JSON.toString());
 
 		return (Boolean) process(request, 200);
 	}
 
 	public boolean createWorkspace(String workspaceName) throws Exception {
-		HttpPost request = new HttpPost("http://" + HOST + ":"
-				+ new Integer(PORT).toString() + "/geoserver/rest/workspaces");
+		String geoserverHostAndPort = this.getProperties().getProperty(
+				"geoserverHostAndPort");
+
+		HttpPost request = new HttpPost("http://" + geoserverHostAndPort
+				+ "/geoserver/rest/workspaces");
 		request.addHeader("Accept", ContentType.APPLICATION_JSON.toString());
 		request.setEntity(EntityBuilder.create()
 				.setText("{'workspace': {'name': '" + workspaceName + "'}}")
@@ -97,11 +108,14 @@ public abstract class GeoserverCommunicator implements BenchmarkComponent {
 		return (Boolean) process(request, 201);
 	}
 
-	public boolean createDataStore(String workspaceName, String dataStoreName,
-			String url) throws Exception {
-		HttpPut request = new HttpPut("http://" + HOST + ":"
-				+ new Integer(PORT).toString() + "/geoserver/rest/workspaces/"
-				+ workspaceName + "/datastores/" + dataStoreName
+	public boolean createUrlBasedShapefileBackedDataStore(String workspaceName,
+			String dataStoreName, String url) throws Exception {
+		String geoserverHostAndPort = this.getProperties().getProperty(
+				"geoserverHostAndPort");
+
+		HttpPut request = new HttpPut("http://" + geoserverHostAndPort
+				+ "/geoserver/rest/workspaces/" + workspaceName
+				+ "/datastores/" + dataStoreName
 				+ "/url.shp?configure=all&target=shp");
 		request.addHeader("Content-type", "application/zip");
 		request.setEntity(EntityBuilder.create().setText(url).build());

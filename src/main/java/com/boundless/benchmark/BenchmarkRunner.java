@@ -22,8 +22,16 @@ public class BenchmarkRunner {
 	 */
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
-		ApplicationContext ctx = new ClassPathXmlApplicationContext(
-				"benchmark-components.xml");
+		String profile = "default-profile.xml";
+
+		if (args.length > 0) {
+			profile = args[0];
+		}
+
+		logger.info("Initializing benchmark runner with profile [" + profile
+				+ "]");
+
+		ApplicationContext ctx = new ClassPathXmlApplicationContext(profile);
 		@SuppressWarnings("unchecked")
 		List<IBenchmarkComponent> components = (List<IBenchmarkComponent>) ctx
 				.getBean("benchmark-components");

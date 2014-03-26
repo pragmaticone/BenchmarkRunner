@@ -14,14 +14,21 @@ public class GeoserverCleaner extends GeoserverCommunicator {
 	final static Logger logger = LoggerFactory
 			.getLogger(ShapefileBasedDataStoreCreator.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.boundless.benchmark.BenchmarkComponent#getId()
+	private String workspaceName;
+
+	/**
+	 * @return the workspaceName
 	 */
-	@Override
-	public String getId() {
-		return this.getClass().getCanonicalName();
+	public String getWorkspaceName() {
+		return workspaceName;
+	}
+
+	/**
+	 * @param workspaceName
+	 *            the workspaceName to set
+	 */
+	public void setWorkspaceName(String workspaceName) {
+		this.workspaceName = workspaceName;
 	}
 
 	/*
@@ -31,8 +38,7 @@ public class GeoserverCleaner extends GeoserverCommunicator {
 	 */
 	@Override
 	public Object process() throws Exception {
-		String workspaceName = this.getProperties().getProperty(
-				"shpWorkspaceName");
+		String workspaceName = this.getWorkspaceName();
 
 		// If the workspace exists, remove from Geoserver so that we start
 		// from a clean slate.

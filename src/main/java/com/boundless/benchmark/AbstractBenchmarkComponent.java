@@ -3,27 +3,19 @@
  */
 package com.boundless.benchmark;
 
-import java.util.Properties;
 
 /**
  * @author Soumya Sengupta
  * 
  */
 public abstract class AbstractBenchmarkComponent implements IBenchmarkComponent {
-	private Properties properties;
-
-	/**
-	 * @return the properties
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.boundless.benchmark.IBenchmarkComponent#getId()
 	 */
-	public Properties getProperties() {
-		return properties;
-	}
-
-	/**
-	 * @param properties
-	 *            the properties to set
-	 */
-	public void setProperties(Properties properties) {
-		this.properties = properties;
+	@Override
+	public String getId() {
+		return this.getClass().getCanonicalName();
 	}
 }

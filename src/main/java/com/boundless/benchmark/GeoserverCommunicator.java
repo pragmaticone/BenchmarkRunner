@@ -31,14 +31,61 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 	final static Logger logger = LoggerFactory
 			.getLogger(GeoserverCommunicator.class);
 
+	private String geoserverHostAndPort, username, password;
+
+	/**
+	 * @return the geoserverHostAndPort
+	 */
+	public String getGeoserverHostAndPort() {
+		return geoserverHostAndPort;
+	}
+
+	/**
+	 * @param geoserverHostAndPort
+	 *            the geoserverHostAndPort to set
+	 */
+	public void setGeoserverHostAndPort(String geoserverHostAndPort) {
+		this.geoserverHostAndPort = geoserverHostAndPort;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @param username
+	 *            the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password
+	 *            the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	protected Object process(HttpUriRequest request, int expectedResponseCode)
 			throws Exception {
-		String[] geoserverHostAndPort = this.getProperties()
-				.getProperty("geoserverHostAndPort").split(":");
+		String[] geoserverHostAndPort = this.getGeoserverHostAndPort().split(
+				":");
 		String geoserverHost = geoserverHostAndPort[0];
 		int geoserverPort = Integer.parseInt(geoserverHostAndPort[1]);
-		String username = this.getProperties().getProperty("username");
-		String password = this.getProperties().getProperty("password");
+		String username = this.getUsername();
+		String password = this.getPassword();
 
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		credsProvider.setCredentials(
@@ -73,8 +120,7 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 
 	public boolean checkIfWorkspaceExists(String workspaceName)
 			throws Exception {
-		String geoserverHostAndPort = this.getProperties().getProperty(
-				"geoserverHostAndPort");
+		String geoserverHostAndPort = this.getGeoserverHostAndPort();
 
 		HttpGet request = new HttpGet("http://" + geoserverHostAndPort
 				+ "/geoserver/rest/workspaces/" + workspaceName);
@@ -84,8 +130,7 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 	}
 
 	public boolean deleteWorkspace(String workspaceName) throws Exception {
-		String geoserverHostAndPort = this.getProperties().getProperty(
-				"geoserverHostAndPort");
+		String geoserverHostAndPort = this.getGeoserverHostAndPort();
 
 		HttpDelete request = new HttpDelete("http://" + geoserverHostAndPort
 				+ "/geoserver/rest/workspaces/" + workspaceName
@@ -96,8 +141,7 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 	}
 
 	public boolean createWorkspace(String workspaceName) throws Exception {
-		String geoserverHostAndPort = this.getProperties().getProperty(
-				"geoserverHostAndPort");
+		String geoserverHostAndPort = this.getGeoserverHostAndPort();
 
 		logger.debug("About to create workspace: " + workspaceName);
 		HttpPost request = new HttpPost("http://" + geoserverHostAndPort
@@ -112,8 +156,7 @@ public abstract class GeoserverCommunicator extends AbstractBenchmarkComponent {
 
 	public boolean createShapefileBackedDataStore(String workspaceName,
 			String dataStoreName, String filePath) throws Exception {
-		String geoserverHostAndPort = this.getProperties().getProperty(
-				"geoserverHostAndPort");
+		String geoserverHostAndPort = this.getGeoserverHostAndPort();
 
 		logger.debug("About to load data from [" + filePath
 				+ "] into data store [" + dataStoreName + "] in workspace ["

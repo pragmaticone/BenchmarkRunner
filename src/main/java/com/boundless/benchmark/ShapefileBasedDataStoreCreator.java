@@ -14,14 +14,51 @@ public class ShapefileBasedDataStoreCreator extends GeoserverCommunicator {
 	final static Logger logger = LoggerFactory
 			.getLogger(ShapefileBasedDataStoreCreator.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.boundless.benchmark.BenchmarkComponent#getId()
+	private String shapefileZipLocation, workspaceName, datastoreName;
+
+	/**
+	 * @return the shapefileZipLocation
 	 */
-	@Override
-	public String getId() {
-		return this.getClass().getCanonicalName();
+	public String getShapefileZipLocation() {
+		return shapefileZipLocation;
+	}
+
+	/**
+	 * @param shapefileZipLocation
+	 *            the shapefileZipLocation to set
+	 */
+	public void setShapefileZipLocation(String shapefileZipLocation) {
+		this.shapefileZipLocation = shapefileZipLocation;
+	}
+
+	/**
+	 * @return the workspaceName
+	 */
+	public String getWorkspaceName() {
+		return workspaceName;
+	}
+
+	/**
+	 * @param workspaceName
+	 *            the workspaceName to set
+	 */
+	public void setWorkspaceName(String workspaceName) {
+		this.workspaceName = workspaceName;
+	}
+
+	/**
+	 * @return the datastoreName
+	 */
+	public String getDatastoreName() {
+		return datastoreName;
+	}
+
+	/**
+	 * @param datastoreName
+	 *            the datastoreName to set
+	 */
+	public void setDatastoreName(String datastoreName) {
+		this.datastoreName = datastoreName;
 	}
 
 	/*
@@ -31,12 +68,9 @@ public class ShapefileBasedDataStoreCreator extends GeoserverCommunicator {
 	 */
 	@Override
 	public Object process() throws Exception {
-		String shapefileZipLocation = this.getProperties().getProperty(
-				"shpZipLocation");
-		String workspaceName = this.getProperties().getProperty(
-				"shpWorkspaceName");
-		String datastoreName = this.getProperties().getProperty(
-				"shpDatastoreName");
+		String shapefileZipLocation = this.getShapefileZipLocation();
+		String workspaceName = this.getWorkspaceName();
+		String datastoreName = this.getDatastoreName();
 
 		// If the workspace exists, remove from Geoserver so that we start
 		// from a clean slate.
@@ -60,8 +94,8 @@ public class ShapefileBasedDataStoreCreator extends GeoserverCommunicator {
 		}
 
 		// Now that the workspace exists, create the data store.
-		if (!this.createShapefileBackedDataStore(workspaceName,
-				datastoreName, shapefileZipLocation)) {
+		if (!this.createShapefileBackedDataStore(workspaceName, datastoreName,
+				shapefileZipLocation)) {
 			logger.info("Data store " + datastoreName
 					+ " could not be created.");
 		} else {
